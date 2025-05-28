@@ -1,0 +1,40 @@
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgb(0, 0, 0);
+  z-index: 100;
+}
+
+.title {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.instruction {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.score {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 18px;
+  background: #000000;
+  color: #ffffff;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+

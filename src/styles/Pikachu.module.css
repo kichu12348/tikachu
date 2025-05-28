@@ -1,0 +1,17 @@
+.pikachu {
+  position: absolute;
+  bottom: 20px;
+  left: 100px;
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: transform 0.3s ease-in-out;
+}
+
+.pikachu.jumping {
+  transform:rotate(-90deg);
+}
