@@ -55,7 +55,6 @@ const Game: React.FC = () => {
   };
 
   const jump = useCallback(() => {
-    // More precise ground check and cleaner jump logic
     if (
       gameState === "running" &&
       Math.abs(pikachuY - GROUND_Y) < 0.1 &&
@@ -91,17 +90,12 @@ const Game: React.FC = () => {
   const updatePhysics = useCallback(() => {
     if (gameState !== "running") return;
 
-    // Update velocity first
     const newVelocity = pikachuVelocity + GRAVITY;
     setPikachuVelocity(newVelocity);
 
-    // Then update position
     setPikachuY((prev) => {
       const newY = prev + newVelocity;
-
-      // More precise ground collision with small tolerance
       if (newY >= GROUND_Y - 0.1) {
-        // Only reset states if we were actually falling
         if (newVelocity >= 0) {
           setIsJumping(false);
           setPikachuVelocity(0);
@@ -190,27 +184,26 @@ const Game: React.FC = () => {
         <GameOverScreen score={score} onRestart={startGame} />
       )}
 
-      {gameState === "running" && (
-        <>
-          <Score score={score} />
-          <div className={styles.gameArea}>
-            <Tikachu
-              ref={pikachuRef}
-              isJumping={isJumping}
-              yPosition={pikachuY}
+      <>
+        <Score score={score} />
+        <div className={styles.gameArea}>
+          <Tikachu
+            ref={pikachuRef}
+            isJumping={isJumping}
+            yPosition={pikachuY}
+            isRunning={gameState === "running"}
+          />
+          {obstacles.map((obstacle) => (
+            <Obstacle
+              key={obstacle.id}
+              id={obstacle.id}
+              left={obstacle.left}
+              type={obstacle.type}
             />
-            {obstacles.map((obstacle) => (
-              <Obstacle
-                key={obstacle.id}
-                id={obstacle.id}
-                left={obstacle.left}
-                type={obstacle.type}
-              />
-            ))}
-          </div>
-          <div className={styles.ground}></div>
-        </>
-      )}
+          ))}
+        </div>
+        <div className={styles.ground}></div>
+      </>
     </div>
   );
 };

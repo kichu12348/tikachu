@@ -8,7 +8,7 @@ interface StartScreenProps {
 const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
   return (
     <div className={styles.screen}>
-      <h1 className={styles.title}>Pikachu Runner</h1>
+      <h1 className={styles.title}>Tikachu 404</h1>
       <p className={styles.instruction}>Press SPACE or ↑ to start</p>
       <button className={styles.button} onClick={onStart}>
         Start Game

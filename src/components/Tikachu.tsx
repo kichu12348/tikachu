@@ -1,20 +1,19 @@
-import { forwardRef,useEffect,useState} from "react";
+import { forwardRef, useEffect, useState } from "react";
 import styles from "../styles/tikachu.module.css";
 
 interface PikachuProps {
   isJumping: boolean;
   yPosition: number;
+  isRunning?: boolean;
 }
 
 const Tikachu = forwardRef<HTMLDivElement, PikachuProps>(
-  ({ isJumping, yPosition }, ref) => {
+  ({ isJumping, yPosition, isRunning = true }, ref) => {
+    const [actor, setActor] = useState<string>("run_1");
 
-    const [actor,setActor] = useState<string>("run_1");
+    useEffect(() => {
+      if (isJumping || !isRunning) return;
 
-    useEffect(()=>{
-      // Only animate when not jumping to prevent animation conflicts
-      if (isJumping) return;
-      
       const interval = setInterval(() => {
         setActor((prev) => {
           if (prev === "run_1") return "run_2";
@@ -23,18 +22,25 @@ const Tikachu = forwardRef<HTMLDivElement, PikachuProps>(
       }, 200);
 
       return () => clearInterval(interval);
-    },[isJumping]);
+    }, [isJumping, isRunning]);
 
     return (
       <div
         ref={ref}
         className={`${styles.pikachu}`}
-        style={{ bottom: `${20 - yPosition}px` }}
+        style={{ bottom: `${30 - yPosition}px` }}
       >
         {isJumping ? (
           <img
             src="/actors/Jump.png"
             alt="tikachu Jumping"
+            className={styles.image}
+            draggable="false"
+          />
+        ) : !isRunning ? (
+          <img
+            src="/actors/Static.png"
+            alt="tikachu Static"
             className={styles.image}
             draggable="false"
           />
