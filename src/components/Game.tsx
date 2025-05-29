@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Pikachu from "./Pikachu";
+import Tikachu from "./Tikachu";
 import Obstacle from "./Obstacle";
 import Score from "./Score";
 import StartScreen from "./StartScreen";
@@ -28,7 +28,6 @@ const Game: React.FC = () => {
   const [obstacles, setObstacles] = useState<ObstacleData[]>([]);
   const [score, setScore] = useState<number>(0);
   const [isJumping, setIsJumping] = useState<boolean>(false);
-  const [isAirborne, setIsAirborne] = useState<boolean>(false);
   const [pikachuY, setPikachuY] = useState<number>(0);
   const [pikachuVelocity, setPikachuVelocity] = useState<number>(0);
   const [gameSpeed, setGameSpeed] = useState<number>(5);
@@ -56,20 +55,16 @@ const Game: React.FC = () => {
   };
 
   const jump = useCallback(() => {
-    // console.log(
-    //   "Jumping",
-    //   isJumping,
-    //   "Y position:",
-    //   pikachuY,
-    //   "Airborne:",
-    //   isAirborne
-    // );
-    if (gameState === "running" && !isAirborne && pikachuY === GROUND_Y) {
-      setIsAirborne(true);
+    // More precise ground check and cleaner jump logic
+    if (
+      gameState === "running" &&
+      Math.abs(pikachuY - GROUND_Y) < 0.1 &&
+      Math.abs(pikachuVelocity) < 0.1
+    ) {
       setIsJumping(true);
       setPikachuVelocity(JUMP_FORCE);
     }
-  }, [gameState, pikachuY, isAirborne]);
+  }, [gameState, pikachuY, pikachuVelocity]);
 
   const checkCollision = useCallback(() => {
     if (!pikachuRef.current) return false;
@@ -96,14 +91,21 @@ const Game: React.FC = () => {
   const updatePhysics = useCallback(() => {
     if (gameState !== "running") return;
 
-    setPikachuVelocity((prev) => prev + GRAVITY);
-    setPikachuY((prev) => {
-      const newY = prev + pikachuVelocity;
+    // Update velocity first
+    const newVelocity = pikachuVelocity + GRAVITY;
+    setPikachuVelocity(newVelocity);
 
-      if (newY >= GROUND_Y) {
-        setIsJumping(false);
-        setIsAirborne(false);
-        setPikachuVelocity(0);
+    // Then update position
+    setPikachuY((prev) => {
+      const newY = prev + newVelocity;
+
+      // More precise ground collision with small tolerance
+      if (newY >= GROUND_Y - 0.1) {
+        // Only reset states if we were actually falling
+        if (newVelocity >= 0) {
+          setIsJumping(false);
+          setPikachuVelocity(0);
+        }
         return GROUND_Y;
       }
 
@@ -113,7 +115,6 @@ const Game: React.FC = () => {
 
   const gameLoop = useCallback(() => {
     if (gameState !== "running") return;
-
     const currentTime = Date.now();
 
     updatePhysics();
@@ -123,7 +124,7 @@ const Game: React.FC = () => {
     );
 
     if (currentTime - lastObstacleTimeRef.current > OBSTACLE_SPAWN_RATE) {
-      const obstacleType = ["pokeball", "rocket","tree"][
+      const obstacleType = ["pokeball", "rocket", "tree"][
         Math.floor(Math.random() * 2)
       ] as "pokeball" | "rocket";
       const newObstacle: ObstacleData = {
@@ -165,10 +166,10 @@ const Game: React.FC = () => {
 
     window.addEventListener("keydown", handleKeyPress);
     window.addEventListener("touchstart", jump);
-    return () =>{ 
-        window.removeEventListener("keydown", handleKeyPress);
-        window.removeEventListener("touchstart", jump);
-    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+      window.removeEventListener("touchstart", jump);
+    };
   }, [gameState, jump]);
 
   useEffect(() => {
@@ -193,7 +194,7 @@ const Game: React.FC = () => {
         <>
           <Score score={score} />
           <div className={styles.gameArea}>
-            <Pikachu
+            <Tikachu
               ref={pikachuRef}
               isJumping={isJumping}
               yPosition={pikachuY}
