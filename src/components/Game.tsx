@@ -192,6 +192,7 @@ const Game: React.FC = () => {
             isJumping={isJumping}
             yPosition={pikachuY}
             isRunning={gameState === "running"}
+            gameSpeed={gameSpeed}
           />
           {obstacles.map((obstacle) => (
             <Obstacle
