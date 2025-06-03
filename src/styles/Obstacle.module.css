@@ -8,6 +8,12 @@
   align-items: center;
   justify-content: center;
   z-index: 5;
+
+  img{
+    width: 65px;
+    height: auto;
+    object-fit: contain;
+  }
 }
 
 .pokeball {
@@ -16,4 +22,8 @@
 
 .rocket {
   bottom: 90px;
+}
+
+.aswin {
+  bottom: 40px;
 }

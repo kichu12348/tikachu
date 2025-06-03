@@ -9,7 +9,7 @@ import styles from "../styles/Game.module.css";
 interface ObstacleData {
   id: number;
   left: number;
-  type: "pokeball" | "rocket";
+  type: "pokeball" | "rocket"|"aswin";
 }
 
 //contants
@@ -118,9 +118,9 @@ const Game: React.FC = () => {
     );
 
     if (currentTime - lastObstacleTimeRef.current > OBSTACLE_SPAWN_RATE) {
-      const obstacleType = ["pokeball", "rocket", "tree"][
-        Math.floor(Math.random() * 2)
-      ] as "pokeball" | "rocket";
+      const obstacleType = ["pokeball", "rocket", "aswin"][
+        Math.floor(Math.random() * 3)
+      ] as "pokeball" | "rocket" | "aswin";
       const newObstacle: ObstacleData = {
         id: currentTime,
         left: 800,
@@ -150,7 +150,7 @@ const Game: React.FC = () => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.code === "Space" || event.code === "ArrowUp") {
         event.preventDefault();
-        if (gameState === "start") {
+        if (gameState === "start" || gameState === "gameOver") {
           startGame();
         } else {
           jump();
