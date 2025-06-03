@@ -54,16 +54,12 @@ const Game: React.FC = () => {
     }
   };
 
-  const jump = useCallback(() => {
-    if (
-      gameState === "running" &&
-      Math.abs(pikachuY - GROUND_Y) < 0.1 &&
-      Math.abs(pikachuVelocity) < 0.1
-    ) {
-      setIsJumping(true);
-      setPikachuVelocity(JUMP_FORCE);
-    }
-  }, [gameState, pikachuY, pikachuVelocity]);
+const jump = useCallback(() => {
+  if (gameState === "running" && pikachuY >= GROUND_Y - 0.1) {
+    setIsJumping(true);
+    setPikachuVelocity(JUMP_FORCE);
+  }
+}, [gameState, pikachuY]);
 
   const checkCollision = useCallback(() => {
     if (!pikachuRef.current) return false;
@@ -88,24 +84,21 @@ const Game: React.FC = () => {
   }, [obstacles]);
 
   const updatePhysics = useCallback(() => {
-    if (gameState !== "running") return;
+  if (gameState !== "running") return;
 
-    const newVelocity = pikachuVelocity + GRAVITY;
-    setPikachuVelocity(newVelocity);
+  const newVelocity = pikachuVelocity + GRAVITY;
+  setPikachuVelocity(newVelocity);
 
-    setPikachuY((prev) => {
-      const newY = prev + newVelocity;
-      if (newY >= GROUND_Y - 0.1) {
-        if (newVelocity >= 0) {
-          setIsJumping(false);
-          setPikachuVelocity(0);
-        }
-        return GROUND_Y;
-      }
-
-      return newY;
-    });
-  }, [gameState, pikachuVelocity]);
+  setPikachuY((prev) => {
+    const newY = prev + newVelocity;
+    if (newY >= GROUND_Y) {
+      setIsJumping(false);
+      setPikachuVelocity(0);
+      return GROUND_Y;
+    }
+    return newY;
+  });
+}, [gameState, pikachuVelocity]);
 
   const gameLoop = useCallback(() => {
     if (gameState !== "running") return;
