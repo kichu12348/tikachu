@@ -63,21 +63,21 @@ const Tikachu = forwardRef<HTMLDivElement, PikachuProps>(
       >
         {isJumping ? (
           <img
-            src="/actors/Jump.png"
+            src="/actors/Jump.webp"
             alt="tikachu Jumping"
             className={styles.image}
             draggable="false"
           />
         ) : !isRunning ? (
           <img
-            src="/actors/Static.png"
+            src="/actors/Static.webp"
             alt="tikachu Static"
             className={styles.image}
             draggable="false"
           />
         ) : (
           <img
-            src={"/actors/" + actor + ".png"}
+            src={"/actors/" + actor + ".webp"}
             alt="Pikachu"
             className={styles.image}
             draggable="false"
